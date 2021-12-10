@@ -8,13 +8,6 @@ import api.GeoLocation;
 public class GeoLocationImpl implements GeoLocation {
     private double x, y, z;
 
-    //constructor
-    public GeoLocationImpl(String geo) {
-        String[] arrOfStr = geo.split(",");
-        this.x = Double.parseDouble(arrOfStr[0]);
-        this.y = Double.parseDouble(arrOfStr[1]);
-        this.z = Double.parseDouble(arrOfStr[2]);
-    }
 
     public GeoLocationImpl(double x, double y, double z){
         this.x = x;

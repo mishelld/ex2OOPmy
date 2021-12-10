@@ -3,6 +3,7 @@ package gui;
 import api.DirectedWeightedGraph;
 import api.EdgeData;
 import api.NodeData;
+import codes.GeoLocationImpl;
 import codes.NodeDataImpl;
 
 import javax.swing.*;
@@ -145,9 +146,11 @@ public class panel extends JPanel {
         x-=5;
         double newX = (x-12)/unitX + minX;
         double newY = (y-12)/unitY + minY;
-        graph.addNode(new NodeDataImpl(key,newX+","+newY+",0"));
+        GeoLocationImpl GOO = new GeoLocationImpl(newX,newY,0);
+        graph.addNode(new NodeDataImpl(GOO,key));
         repaint();
     }
 
-    
+
+
 }

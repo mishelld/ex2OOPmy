@@ -36,15 +36,18 @@ public class Ex2 {
      * @return
      **/
     public static DirectedWeightedGraph getGrapg(String json_file) {
-        DirectedWeightedGraph graph;
-        try {
-            graph = readGRaphFromJson(json_file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            graph = new DirectedWeightedGraphImpl();
+        DirectedWeightedGraphImpl Initialize_graph = new DirectedWeightedGraphImpl();
+        DirectedWeightedGraphAlgorithmsImpl algo_graph = new DirectedWeightedGraphAlgorithmsImpl();
+        algo_graph.init(Initialize_graph);
+        try{
+            algo_graph.load(json_file);
         }
-        return graph;
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return algo_graph.getGraph();
     }
+
 
     /**
      * This static function will be used to test your implementation
@@ -53,11 +56,18 @@ public class Ex2 {
      * @return
      */
     public static DirectedWeightedGraphAlgorithms getGrapgAlgo(String json_file) {
-        DirectedWeightedGraph graph = getGrapg(json_file);
-        DirectedWeightedGraphAlgorithms graphAlgo = new DirectedWeightedGraphAlgorithmsImpl();
-        graphAlgo.init(graph);
-        return graphAlgo;
+        DirectedWeightedGraphImpl Initialize_graph = new DirectedWeightedGraphImpl();
+        DirectedWeightedGraphAlgorithmsImpl algo_graph = new DirectedWeightedGraphAlgorithmsImpl();
+        algo_graph.init(Initialize_graph);
+        try {
+            algo_graph.load(json_file);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return algo_graph;
     }
+
 
     /**
      * This static function will run your GUI using the json fime.
@@ -69,28 +79,4 @@ public class Ex2 {
         new frame(graphAlgo);
     }
 
-    public static DirectedWeightedGraphImpl readGRaphFromJson(String json_file)
-            throws FileNotFoundException, IOException, ParseException {
-        DirectedWeightedGraphImpl ans = new DirectedWeightedGraphImpl();
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader(json_file));
-        JSONObject jobj = (JSONObject) obj;
-        JSONArray edges = (JSONArray) jobj.get("Edges");
-        JSONArray nodes = (JSONArray) jobj.get("Nodes");
-        for (Object o : nodes) {
-            JSONObject temp = (JSONObject) o;
-            NodeData n = new NodeDataImpl(Integer.parseInt(temp.get("id").toString()), temp.get("pos").toString());
-            ans.addNode(n);
-        }
-        for (Object o : edges) {
-            JSONObject temp = (JSONObject) o;
-            if ((temp.get("src") != null) && temp.get("dest") != null && temp.get("w") != null) {
-                int src = Integer.parseInt(temp.get("src").toString());
-                int dest = Integer.parseInt(temp.get("dest").toString());
-                double w = Double.parseDouble(temp.get("w").toString());
-                ans.connect(src, dest, w);
-            }
-        }
-        return ans;
-    }
 }

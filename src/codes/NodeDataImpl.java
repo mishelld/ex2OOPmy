@@ -1,5 +1,4 @@
 package codes;
-
 import api.*;
 
 import java.awt.*;
@@ -19,15 +18,15 @@ public class NodeDataImpl implements NodeData {
     private HashMap<Integer, EdgeData> outEdges; // The edges that going out from this node.
     private HashMap<Integer, EdgeData> inEdges;  // The edges that going in to this node.
 
-    public NodeDataImpl(int key, String loc) {
-        this.info = null;
-        this.key = key;
-        this.tag = tag;
-        this.weight = weight;
-        location = new GeoLocationImpl(loc);
-        this.outEdges = new HashMap<>();
-        this.inEdges = new HashMap<>();
-    }
+       /* public NodeDataImpl(int key, String loc) {
+            this.info = null;
+            this.key = key;
+            this.tag = tag;
+            this.weight = weight;
+            location = new GeoLocationImpl(loc);
+            this.outEdges = new HashMap<>();
+            this.inEdges = new HashMap<>();
+        }*/
 
     public NodeDataImpl(GeoLocation location, int key){
         this.info = null;

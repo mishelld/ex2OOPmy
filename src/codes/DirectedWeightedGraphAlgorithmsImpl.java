@@ -6,12 +6,18 @@ import api.EdgeData;
 import api.GeoLocation;
 import api.NodeData;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * represents a Directed (positive) Weighted Graph Theory Algorithms including:
@@ -221,8 +227,56 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
      */
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
+        if(this.isConnected()){
+            List<NodeData> unVisited = new LinkedList<>();
+            Iterator<NodeData> nodes = this.graph.nodeIter();
+            List<NodeData> path = new LinkedList<>();
+            if(nodes.hasNext()){
+                double totalDistance = tsp(unVisited, nodes.next(), path, new LinkedList<>());
+                System.out.println("Distance: " + totalDistance);
+                return path;
+            }
+            return null;
+        }
+        System.out.print("There is no path such that go through all the cities");
         return null;
     }
+
+    public Double tsp(List<NodeData> unVisited, NodeData currNode, List<NodeData> path, List<NodeData> bestPath) {
+        if(unVisited.isEmpty()){
+            List<NodeData> toStart = this.shortestPath(currNode.getKey(), path.get(0).getKey());
+            for(NodeData node : toStart){
+                path.add(node);
+            }
+            return this.shortestPathDist(currNode.getKey(), path.get(0).getKey());
+        }
+        double min = DijkstraAlgo.INFINITY;
+        Iterator<EdgeData> outEdges = this.graph.edgeIter(currNode.getKey());
+        while(outEdges.hasNext()){
+            EdgeData currEdge = outEdges.next();
+            NodeData destNode = this.graph.getNode(currEdge.getDest());
+            if(unVisited.contains(destNode)){
+                path.add(currNode);
+                unVisited.remove(destNode);
+                currNode = destNode;
+                double isMin = tsp(unVisited, currNode, path, bestPath) + currEdge.getWeight();
+                if(isMin < min){
+                    min = isMin;
+                    copyPath(path, bestPath);
+                }
+            }
+        }
+        copyPath(bestPath, path);;
+        return min;
+    }
+
+    public void copyPath(List<NodeData> from, List<NodeData> to){
+        to.clear();
+        for(NodeData node : from){
+            to.add(node);
+        }
+    }
+
 
     /**
      * Saves this weighted (directed) graph to the given
@@ -232,61 +286,19 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
      */
     @Override
     public boolean save(String file) {
-        FileWriter jsonFile;
-        Map<String, JSONArray> mainMap = new HashMap<>();
-
-        JSONArray edgeArray = new JSONArray();
-        Iterator<EdgeData> iterEdges = graph.edgeIter();
-        while (iterEdges.hasNext()) {
-            EdgeData edge = iterEdges.next();
-            Map<String, String> edgeMap = new HashMap<>();
-            edgeMap.put("src", edge.getSrc() + "");
-            edgeMap.put("w", edge.getWeight() + "");
-            edgeMap.put("dest", edge.getDest() + "");
-            JSONObject obj = new JSONObject();
-            obj.putAll(edgeMap);
-            edgeArray.add(obj);
+        boolean b = load(file);
+        if(b){
+            try (Writer writer_graph = new FileWriter(file)) {
+                Gson json_file = new GsonBuilder().create();
+                json_file.toJson(graph, writer_graph);
+                return true;
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-        mainMap.put("Edges", edgeArray);
-        JSONArray nodeArray = new JSONArray();
-        Iterator<NodeData> iterNodes = graph.nodeIter();
-        while (iterNodes.hasNext()) {
-            NodeData node = iterNodes.next();
-            GeoLocation pos = node.getLocation();
-            Map<String, String> nodesMap = new HashMap<>();
-            nodesMap.put("pos", pos.x() + "," + pos.y() + "," + pos.z());
-            nodesMap.put("id", node.getKey() + "");
-            JSONObject obj = new JSONObject();
-            obj.putAll(nodesMap);
-            nodeArray.add(obj);
-        }
-        mainMap.put("Nodes", nodeArray);
-
-        try {
-
-            // Constructs a FileWriter given a file name, using the platform's default
-            // charset
-            jsonFile = new FileWriter(file);
-            JSONObject temp = new JSONObject();
-            temp.putAll(mainMap);
-            jsonFile.write(temp.toJSONString());
-            jsonFile.flush();
-            jsonFile.close();
-
-        } catch (IOException e) {
-            // e.printStackTrace();
-            return false;
-        }
-        // } finally {
-
-        // try {
-
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // }
-        return true;
+        return b;
     }
 
     /**
@@ -301,13 +313,55 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
     @Override
     public boolean load(String file) {
         try {
-            DirectedWeightedGraph newGraph = Ex2.getGrapg(file);
-            graph = newGraph;
-
-        } catch (Exception e) {
+            DirectedWeightedGraphImpl load_graph = new DirectedWeightedGraphImpl();
+            JSONParser parser = new JSONParser();
+            Object str = parser.parse(new FileReader(file));
+            JSONObject json_file = (JSONObject) str;
+            JSONArray graph_nodes = (JSONArray) json_file.get("Nodes");
+            JSONArray graph_edges = (JSONArray) json_file.get("Edges");
+            double arr[] = {0,0,0};
+            for (Object obj : graph_nodes) {
+                JSONObject temp = (JSONObject) obj;
+                boolean b = true;
+                if ((temp.get("pos") == null) || (temp.get("id") == null)) b = false;
+                if(b) {
+                    arr = splitPoint(temp.get("pos").toString());
+                    GeoLocationImpl p1 = new GeoLocationImpl(arr[0], arr[1], arr[2]);
+                    int key = Integer.parseInt(temp.get("id").toString());
+                    NodeData n = new NodeDataImpl(p1, key);
+                    load_graph.addNode(n);
+                }
+            }
+            for (Object obj : graph_edges) {
+                JSONObject temp = (JSONObject) obj;
+                boolean b = true;
+                if ((temp.get("src") == null) || (temp.get("dest") == null) ||(temp.get("w") == null)) b = false;
+                if (b) {
+                    int src = Integer.parseInt(temp.get("src").toString());
+                    int dest = Integer.parseInt(temp.get("dest").toString());
+                    double w = Double.parseDouble(temp.get("w").toString());
+                    load_graph.connect(src, dest, w);
+                }
+            }
+            init(load_graph);
+            return true;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
-        return true;
+    }
+
+    public double[] splitPoint(String s) {
+        double arr[] = {0,0,0};
+        String[] arrOfStr = s.split(",");
+        arr[0] = Double.parseDouble(arrOfStr[0]);
+        arr[1] = Double.parseDouble(arrOfStr[1]);
+        arr[2] = Double.parseDouble(arrOfStr[2]);
+        return arr;
     }
 
 }
