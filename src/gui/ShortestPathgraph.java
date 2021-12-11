@@ -16,11 +16,11 @@ public class ShortestPathgraph extends JFrame implements ActionListener {
     private JLabel text;
     private JLabel textD;
 
-    private DirectedWeightedGraphAlgorithms graphAlgo;
+    private DirectedWeightedGraphAlgorithms Galgo;
 
     public ShortestPathgraph(DirectedWeightedGraphAlgorithms graphAlgo) {
         super("Shortest Path Dist");
-        this.graphAlgo = graphAlgo;
+        this.Galgo = graphAlgo;
         text = new JLabel("write the Src node:");
         textD = new JLabel("write the Dest node:");
         button = new JButton("click");
@@ -55,12 +55,12 @@ public class ShortestPathgraph extends JFrame implements ActionListener {
         try {
             int src = Integer.parseInt(this.src.getText());
             int dest = Integer.parseInt(this.dest.getText());
-            List<NodeData> path = graphAlgo.shortestPath(src, dest);
+            List<NodeData> path = Galgo.shortestPath(src, dest);
             String j;
             if (!path.isEmpty()) {
                 j = "the dist Between " + src + " and " + dest + " Is:\n";
-                for (NodeData nodeData : path) {
-                    j += nodeData.getKey() + "--->";
+                for (NodeData n : path) {
+                    j += n.getKey() + "--->";
                 }
             }
             else {
@@ -71,8 +71,8 @@ public class ShortestPathgraph extends JFrame implements ActionListener {
         }
         catch (Exception e) {
             e.printStackTrace();
-            String message = "Something is wrong";
-            JOptionPane.showMessageDialog(new JFrame(), message, "error", JOptionPane.ERROR_MESSAGE);
+            String m = "Something is wrong";
+            JOptionPane.showMessageDialog(new JFrame(), m, "error", JOptionPane.ERROR_MESSAGE);
         }
         this.dispose();
     }

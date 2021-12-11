@@ -21,11 +21,10 @@ import java.io.IOException;
  */
 
 public class Ex2 {
-    // = "data/G1.json";
 
 
     public static void main(String[] args) {
-        String json_file = "data/G3.json"; //= args[0];
+        String json_file = "data/G3.json";
         runGUI(json_file);
     }
 

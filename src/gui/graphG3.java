@@ -32,7 +32,7 @@ public class graphG3 extends JFrame implements ActionListener {
         super();
         graphAlgo = ans;
         panel = new panel(ans.getGraph());
-        panel.init(graphAlgo.getGraph());
+        panel.main(graphAlgo.getGraph());
         panel.repaint();
         this.add(panel);
         this.pack();

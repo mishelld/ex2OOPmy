@@ -21,9 +21,6 @@ public class graphG1 extends JFrame implements ActionListener {
     static JButton button10;
 
 
-
-
-
     static JLabel text;
     private gui.panel panel;
 
@@ -33,7 +30,7 @@ public class graphG1 extends JFrame implements ActionListener {
         super();
         graphAlgo = ans;
         panel = new panel(ans.getGraph());
-        panel.init(graphAlgo.getGraph());
+        panel.main(graphAlgo.getGraph());
         panel.repaint();
         this.add(panel);
         this.pack();
@@ -52,12 +49,6 @@ public class graphG1 extends JFrame implements ActionListener {
         button8= new JButton("shortest path");
         button9= new JButton("shortest path dist");
         button10= new JButton("TSP");
-
-
-
-
-
-
 
         button.addActionListener(this);
         button1.addActionListener(this);

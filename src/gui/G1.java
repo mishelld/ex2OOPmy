@@ -21,8 +21,6 @@ public class G1 extends JFrame implements ActionListener , MouseListener {
     private JMenuItem connect;
 
 
-
-
     private boolean needToAddNode = false;
 
     public G1(DirectedWeightedGraphAlgorithms ans){
@@ -48,8 +46,6 @@ public class G1 extends JFrame implements ActionListener , MouseListener {
         removeEdge.addActionListener(this);
         connect = new JMenuItem("connect");
         connect.addActionListener(this);
-
-
 
 
         graphOp.add(addNode);

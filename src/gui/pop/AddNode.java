@@ -75,7 +75,7 @@ public class AddNode extends JFrame implements ActionListener {
         setVisible(false);
         try {
             int key = Integer.parseInt(inputKey.getText());
-            panel.addNode(key, x, y);
+            //  panel.addNode(key, x, y);
         }
         catch (Exception e) {
             String message = "Something Gets Wrong :(";

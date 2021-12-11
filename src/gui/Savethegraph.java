@@ -20,7 +20,7 @@ public class Savethegraph extends JFrame implements ActionListener {
         text = new JLabel("Name Of The New File:");
         button = new JButton("Enter");
         button.addActionListener(this);
-        name = new JTextField(8);
+        name = new JTextField(10);
         JPanel p = new JPanel();
         p.add(text);
         p.add(name);
@@ -32,15 +32,12 @@ public class Savethegraph extends JFrame implements ActionListener {
         setResizable(true);
         setVisible(true);
     }
-
-    // if the button is pressed
     public void actionPerformed(ActionEvent e) {
         String s = e.getActionCommand();
         if (s.equals("Enter")) {
             save();
         }
     }
-
     private void save() {
         setVisible(false);
         try {

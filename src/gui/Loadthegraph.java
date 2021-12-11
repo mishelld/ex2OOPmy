@@ -49,7 +49,7 @@ public class Loadthegraph extends JFrame implements ActionListener {
         setVisible(false);
         try {
             if (graphAlgo.load(name.getText())) {
-                panel.init(graphAlgo.getGraph());
+                panel.main(graphAlgo.getGraph());
                 panel.repaint();
             }
             else{

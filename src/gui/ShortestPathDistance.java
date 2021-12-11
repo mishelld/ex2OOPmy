@@ -17,7 +17,7 @@ public class ShortestPathDistance extends JFrame implements ActionListener {
     private DirectedWeightedGraphAlgorithms graphAlgo;
 
     public ShortestPathDistance(DirectedWeightedGraphAlgorithms graphAlgo) {
-        super("Shortest Path Dist");
+        super("Shortest path Dist");
         this.graphAlgo = graphAlgo;
         textSrc = new JLabel("write the Src node:");
         textDest = new JLabel("write the Dest node:");
@@ -54,7 +54,6 @@ public class ShortestPathDistance extends JFrame implements ActionListener {
     }
 
     private void shortestpathdist() {
-        // set the text of the label to the text of the field
         setVisible(false);
         try {
             int src = Integer.parseInt(inputSrc.getText());
@@ -63,10 +62,9 @@ public class ShortestPathDistance extends JFrame implements ActionListener {
             String h;
             if (dis != -1) {
                 h = "The Distance Between " + src + " And " + dest + " Is: " + dis;
-                h = "There Is No Path Between " + src + " And " + dest;
             }
             else {
-                h = "There Is No Path Between " + src + " And " + dest;
+                h = "There Is No path Between " + src + " And " + dest;
             }
             JOptionPane.showMessageDialog(new JFrame(), h, "Shortest Path", JOptionPane.DEFAULT_OPTION);
         }

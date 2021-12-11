@@ -6,22 +6,44 @@ import codes.*;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class MyDirectedWeightedGraphTest {
     DirectedWeightedGraph graph;
     DirectedWeightedGraphAlgorithmsImpl algoGraph;
 
     MyDirectedWeightedGraphTest() {
-        graph = Ex2.getGrapg("src/data/G1.json"); // enter here the path for G1 json
+        graph = Ex2.getGrapg("data/G1.json"); // enter here the path for G1 json
         algoGraph = new DirectedWeightedGraphAlgorithmsImpl();
         algoGraph.init(graph);
     }
 
     public static void main(String[] args) {
         MyDirectedWeightedGraphTest test = new MyDirectedWeightedGraphTest();
-        System.out.println(test.graph.nodeSize());
-        System.out.println(test.algoGraph.isConnected());
-        System.out.println(test.algoGraph.shortestPathDist(1,7));
-        System.out.println(test.algoGraph.shortestPath(0,10));
+      /*  List<NodeData> tsp = new ArrayList<>();
+        for (int j = 0; j < 48; j++) {
+            tsp.add(test.graph.getNode(j));
+        }
+        for (NodeData n :test.algoGraph.tsp(tsp)) {
+            System.out.print(n.getKey() + ",");
+        }*/
+        List<NodeData> cities = new LinkedList<>();
+        cities.add(test.graph.getNode(1));
+        cities.add(test.graph.getNode(2));
+        cities.add(test.graph.getNode(3));
+      //  cities.add(test.graph.getNode(5));
+        //cities.add(test.graph.getNode(6));
+    //    cities.add(test.graph.getNode(11));
+        test.algoGraph.printList(test.algoGraph.tsp(cities));
+
+       // System.out.println(test.graph);
+       // System.out.println(test.graph.nodeSize());
+       // System.out.println(test.algoGraph.isConnected());
+       // System.out.println(test.algoGraph.shortestPathDist(3,5));
+        // System.out.println(test.algoGraph.shortestPath(3,5));
+
 
 //        for (NodeData node:test.algoGraph.shortestPath(0,10)) {
 //            System.out.println(node.getKey());

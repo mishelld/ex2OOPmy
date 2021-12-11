@@ -1,5 +1,6 @@
 package codes;
 
+
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
@@ -153,17 +154,18 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
      */
     @Override
     public List<NodeData> shortestPath(int src, int dest) {
-        DIJKSTRA.doAlgo(graph, graph.getNode(src));
+        DIJKSTRA.doAlgo(this.graph, this.graph.getNode(src));
         HashMap<NodeData, NodeData> pathDistFromSrc = DIJKSTRA.previeusVertex;
-        if (DIJKSTRA.isTherePath(this.graph, dest)) {
-            Stack<NodeData> pathOppositeDirection = new Stack<>();
+        if(DIJKSTRA.isTherePath(this.graph, dest)){
+            Stack<NodeData> pathOppositeDirection= new Stack<>();
             List<NodeData> path = new LinkedList<>();
             NodeData currNode = this.graph.getNode(dest);
-            while (currNode.getKey() != src) {
+            while(currNode.getKey() != src){
                 pathOppositeDirection.push(currNode);
                 currNode = pathDistFromSrc.get(currNode);
             }
-            while (!pathOppositeDirection.isEmpty())
+            pathOppositeDirection.push(currNode);
+            while(!pathOppositeDirection.isEmpty())
                 path.add(pathOppositeDirection.pop());
             return path;
         }
@@ -228,15 +230,12 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
     @Override
     public List<NodeData> tsp(List<NodeData> cities) {
         if(this.isConnected()){
-            List<NodeData> unVisited = new LinkedList<>();
-            Iterator<NodeData> nodes = this.graph.nodeIter();
+            NodeData currNode = cities.remove(0);
+            List<NodeData> bestPath = new LinkedList<>();
             List<NodeData> path = new LinkedList<>();
-            if(nodes.hasNext()){
-                double totalDistance = tsp(unVisited, nodes.next(), path, new LinkedList<>());
-                System.out.println("Distance: " + totalDistance);
-                return path;
-            }
-            return null;
+            double totalDistance = tsp(cities, currNode, path, bestPath);
+            System.out.println("Total distance is: " + totalDistance);
+            return bestPath;
         }
         System.out.print("There is no path such that go through all the cities");
         return null;
@@ -245,39 +244,48 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
     public Double tsp(List<NodeData> unVisited, NodeData currNode, List<NodeData> path, List<NodeData> bestPath) {
         if(unVisited.isEmpty()){
             List<NodeData> toStart = this.shortestPath(currNode.getKey(), path.get(0).getKey());
-            for(NodeData node : toStart){
-                path.add(node);
-            }
+            path.addAll(toStart);
+            copyPath(path, bestPath);
             return this.shortestPathDist(currNode.getKey(), path.get(0).getKey());
         }
         double min = DijkstraAlgo.INFINITY;
-        Iterator<EdgeData> outEdges = this.graph.edgeIter(currNode.getKey());
-        while(outEdges.hasNext()){
-            EdgeData currEdge = outEdges.next();
-            NodeData destNode = this.graph.getNode(currEdge.getDest());
-            if(unVisited.contains(destNode)){
-                path.add(currNode);
-                unVisited.remove(destNode);
-                currNode = destNode;
-                double isMin = tsp(unVisited, currNode, path, bestPath) + currEdge.getWeight();
-                if(isMin < min){
-                    min = isMin;
-                    copyPath(path, bestPath);
-                }
+        for(NodeData node : unVisited){
+            double distToNode = this.shortestPathDist(currNode.getKey(), node.getKey());
+            List<NodeData> toNode = this.shortestPath(currNode.getKey(), node.getKey());
+            List<NodeData> copyUnVisited = new LinkedList<>();
+            List<NodeData> copyPath = new LinkedList<>();
+            copyPath(unVisited, copyUnVisited);
+            removeNodes(toNode, copyUnVisited);
+            toNode.remove(toNode.size() - 1);
+            copyPath(path, copyPath);
+            copyPath.addAll(toNode);
+            double total = tsp(copyUnVisited, node, copyPath, bestPath) + distToNode;
+            if(total < min){
+                min = total;
             }
         }
-        copyPath(bestPath, path);;
+
         return min;
+    }
+
+    public static void printList(List<NodeData> nodes){
+        for(NodeData node : nodes){
+            System.out.print(node.getKey() + " --> ");
+        }
+        System.out.println();
     }
 
     public void copyPath(List<NodeData> from, List<NodeData> to){
         to.clear();
-        for(NodeData node : from){
-            to.add(node);
-        }
+        to.addAll(from);
     }
 
 
+    public void removeNodes(List<NodeData> from, List<NodeData> to){
+        for(NodeData node : from){
+            to.remove(node);
+        }
+    }
     /**
      * Saves this weighted (directed) graph to the given
      * file name - in JSON format
