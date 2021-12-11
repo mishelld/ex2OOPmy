@@ -1,19 +1,7 @@
 package codes;
 
 import api.*;
-import gui.*;
-
-import api.*;
-import gui.*;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import guigraph.*;
 
 /**
  * This class is the main class for Ex2 - your implementation will be tested

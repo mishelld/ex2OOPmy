@@ -4,7 +4,6 @@ package codes;
 import api.DirectedWeightedGraph;
 import api.DirectedWeightedGraphAlgorithms;
 import api.EdgeData;
-import api.GeoLocation;
 import api.NodeData;
 
 import java.io.FileReader;
@@ -95,28 +94,27 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
         return false;
     }
 
-    private static void DFS(DirectedWeightedGraph graph, NodeData n, boolean[] visited) {
-        visited[n.getKey()] = true;
+    private static void DFS(DirectedWeightedGraph graph, NodeData n, boolean[] was) {
+        was[n.getKey()] = true;
 
-        Iterator<EdgeData> iter = graph.edgeIter(n.getKey());
-        for (Iterator<EdgeData> it3 = iter; it3.hasNext(); ) {
-            EdgeData edge = iter.next();
-            NodeData nodeSon = graph.getNode(edge.getDest());
+        Iterator<EdgeData> t = graph.edgeIter(n.getKey());
+        for (Iterator<EdgeData> iterator3 = t; iterator3.hasNext(); ) {
+            EdgeData edge = t.next();
+            NodeData ns = graph.getNode(edge.getDest());
 
-            if (!visited[nodeSon.getKey()]) {
-                DFS(graph, nodeSon, visited);
-
+            if (!was[ns.getKey()]) {
+                DFS(graph, ns, was);
             }
         }
     }
 
     public static boolean isStronglyConnected(DirectedWeightedGraph graph, int n) {
-        Iterator<NodeData> iterNode = graph.nodeIter();
-        for (Iterator<NodeData> it = iterNode; it.hasNext(); ) {
-            NodeData node = iterNode.next();
-            boolean[] visited = new boolean[n];
-            DFS(graph, node, visited);
-            for (boolean b : visited) {
+        Iterator<NodeData> t = graph.nodeIter();
+        for (Iterator<NodeData> iterator3 = t; iterator3.hasNext(); ) {
+            NodeData nd = t.next();
+            boolean[] was = new boolean[n];
+            DFS(graph, nd, was);
+            for (boolean b : was) {
                 if (!b) {
                     return false;
                 }
@@ -181,19 +179,19 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
     @Override
     public NodeData center() {
         if (isConnected()) {
-            double min = Double.MAX_VALUE;
+            double small = Double.MAX_VALUE;
             for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
-                double max = 0;
+                double big = 0;
                 NodeData n = it.next();
                 for (Iterator<NodeData> it2 = graph.nodeIter(); it2.hasNext(); ) {
                     NodeData e = it2.next();
                     double dist = shortestPathDist(n.getKey(), e.getKey());
-                    if (dist > max) {
-                        max = dist;
+                    if (dist > big) {
+                        big = dist;
                     }
                 }
-                if (min > max) {
-                    min = max;
+                if (small > big) {
+                    small = big;
                 }
             }
             for (Iterator<NodeData> it = graph.nodeIter(); it.hasNext(); ) {
@@ -202,7 +200,7 @@ public class DirectedWeightedGraphAlgorithmsImpl implements DirectedWeightedGrap
                     NodeData e = it2.next();
                     double dist = shortestPathDist(n.getKey(), e.getKey());
 
-                    if (dist == min) {
+                    if (dist == small) {
                         return n;
                     }
                 }

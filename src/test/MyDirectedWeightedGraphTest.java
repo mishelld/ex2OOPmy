@@ -1,14 +1,15 @@
 package test;
+
+import java.util.*;
+
+import api.*;
+import codes.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import api.*;
 import codes.*;
 
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class MyDirectedWeightedGraphTest {
     DirectedWeightedGraph graph;
@@ -22,28 +23,10 @@ public class MyDirectedWeightedGraphTest {
 
     public static void main(String[] args) {
         MyDirectedWeightedGraphTest test = new MyDirectedWeightedGraphTest();
-      /*  List<NodeData> tsp = new ArrayList<>();
-        for (int j = 0; j < 48; j++) {
-            tsp.add(test.graph.getNode(j));
-        }
-        for (NodeData n :test.algoGraph.tsp(tsp)) {
-            System.out.print(n.getKey() + ",");
-        }*/
-        List<NodeData> cities = new LinkedList<>();
-        cities.add(test.graph.getNode(1));
-        cities.add(test.graph.getNode(2));
-        cities.add(test.graph.getNode(3));
-      //  cities.add(test.graph.getNode(5));
-        //cities.add(test.graph.getNode(6));
-    //    cities.add(test.graph.getNode(11));
-        test.algoGraph.printList(test.algoGraph.tsp(cities));
-
-       // System.out.println(test.graph);
-       // System.out.println(test.graph.nodeSize());
-       // System.out.println(test.algoGraph.isConnected());
-       // System.out.println(test.algoGraph.shortestPathDist(3,5));
-        // System.out.println(test.algoGraph.shortestPath(3,5));
-
+        System.out.println(test.graph.nodeSize());
+        System.out.println(test.algoGraph.isConnected());
+        System.out.println(test.algoGraph.shortestPathDist(1,7));
+        System.out.println(test.algoGraph.shortestPath(0,10));
 
 //        for (NodeData node:test.algoGraph.shortestPath(0,10)) {
 //            System.out.println(node.getKey());
@@ -104,7 +87,7 @@ public class MyDirectedWeightedGraphTest {
         test1.graph.removeEdge(0,1);
         test1.graph.removeEdge(1,0);
         test1.graph.removeEdge(2,1);
-        assertEquals(92, test1.graph.getMC());
+        assertEquals(56, test1.graph.getMC());
 
     }
     //7
@@ -118,7 +101,7 @@ public class MyDirectedWeightedGraphTest {
     @Test
     void testNodeSize() {
         MyDirectedWeightedGraphTest test1 = new MyDirectedWeightedGraphTest();
-        assertEquals(17, test1.graph);
+        assertEquals(17, test1.graph.nodeSize());
     }
     @Test
     void tsp() {

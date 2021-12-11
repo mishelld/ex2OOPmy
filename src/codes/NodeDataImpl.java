@@ -15,8 +15,6 @@ public class NodeDataImpl implements NodeData {
     private int tag;
     private double weight;
     private GeoLocation location;
-    private HashMap<Integer, EdgeData> outEdges; // The edges that going out from this node.
-    private HashMap<Integer, EdgeData> inEdges;  // The edges that going in to this node.
 
        /* public NodeDataImpl(int key, String loc) {
             this.info = null;
@@ -39,8 +37,7 @@ public class NodeDataImpl implements NodeData {
     public NodeDataImpl(NodeData other) {
         this.key = other.getKey();
         //   this.location = new GeoLocationImpl(other.getLocation());
-        this.outEdges = new HashMap<>();
-        this.inEdges = new HashMap<>();
+
     }
     /*
        public EdgeData getOutEdge(int dest) throws Exception{
